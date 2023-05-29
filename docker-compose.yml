@@ -7,8 +7,8 @@ services:
       - 5001:5000
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-    networks:
-      - default
+    # networks:
+    #   - default
   chatfiles-ui:
     image: guangzhengli/chatfiles-ui:latest
     container_name: chatfiles-ui
@@ -32,7 +32,7 @@ services:
       - "traefik.http.middlewares.chatfiles-ui_auth.basicauth.users=falktron:$$2y$$05$$8GUJU2uOvVTvb4cod1WpBOQmDhgVy7p.sB3m17zC8.q/.iy/j4tfq"
     networks:
       - auto-gpt.tech
-      - default 
+      # - default 
     depends_on:
       - chatfiles
 
