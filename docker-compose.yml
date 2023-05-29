@@ -4,9 +4,11 @@ services:
     image: guangzhengli/chatfiles:latest
     container_name: chatfiles
     ports:
-      - 5000:5000
+      - 5001:5000
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - default
   chatfiles-ui:
     image: guangzhengli/chatfiles-ui:latest
     container_name: chatfiles-ui
@@ -16,5 +18,24 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - CHAT_FILES_SERVER_HOST=http://chatfiles:5000
       - NEXT_PUBLIC_CHAT_FILES_MAX_SIZE=0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chatfiles-ui-insecure.rule=Host(`chatdoc.auto-gpt.tech`)"
+      - "traefik.http.routers.chatfiles-ui-insecure.entrypoints=web"
+      - "traefik.http.middlewares.chatfiles-ui-redirect-web-secure.redirectscheme.scheme=https"
+      - "traefik.http.routers.chatfiles-ui-insecure.middlewares=chatfiles-ui-redirect-web-secure"
+      - "traefik.http.routers.chatfiles-ui.rule=Host(`chatdoc.auto-gpt.tech`)"
+      - "traefik.http.routers.chatfiles-ui.entrypoints=websecure"
+      - "traefik.http.routers.chatfiles-ui.tls=true"
+      - "traefik.http.routers.chatfiles-ui.tls.certresolver=myresolver"
+      - "traefik.http.routers.chatfiles-ui.middlewares=chatfiles-ui_auth"
+      - "traefik.http.middlewares.chatfiles-ui_auth.basicauth.users=falktron:$$2y$$05$$8GUJU2uOvVTvb4cod1WpBOQmDhgVy7p.sB3m17zC8.q/.iy/j4tfq"
+    networks:
+      - auto-gpt.tech
+      - default 
     depends_on:
       - chatfiles
+
+networks:
+  auto-gpt.tech:
+    external: true
