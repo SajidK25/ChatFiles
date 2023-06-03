@@ -1,40 +1,40 @@
 version: '2.2'
 services:
-  chatfiles:
+  chatdoc:
     image: guangzhengli/chatfiles:latest
-    container_name: chatfiles
+    container_name: chatdoc
     ports:
-      - 5001:5000
+      - 5002:5000
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - default
-  chatfiles-ui:
+  chatdoc-ui:
     image: guangzhengli/chatfiles-ui:latest
-    container_name: chatfiles-ui
-    ports:
-      - 3000:3000
+    container_name: chatdoc-ui
+    # ports:
+    #   - 3000:3000
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - CHAT_FILES_SERVER_HOST=http://chatfiles:5000
+      - CHAT_FILES_SERVER_HOST=http://chatdoc:5000
       - NEXT_PUBLIC_CHAT_FILES_MAX_SIZE=0
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chatfiles-ui-insecure.rule=Host(`chatdoc.auto-gpt.tech`)"
-      - "traefik.http.routers.chatfiles-ui-insecure.entrypoints=web"
-      - "traefik.http.middlewares.chatfiles-ui-redirect-web-secure.redirectscheme.scheme=https"
-      - "traefik.http.routers.chatfiles-ui-insecure.middlewares=chatfiles-ui-redirect-web-secure"
-      - "traefik.http.routers.chatfiles-ui.rule=Host(`chatdoc.auto-gpt.tech`)"
-      - "traefik.http.routers.chatfiles-ui.entrypoints=websecure"
-      - "traefik.http.routers.chatfiles-ui.tls=true"
-      - "traefik.http.routers.chatfiles-ui.tls.certresolver=myresolver"
-      - "traefik.http.routers.chatfiles-ui.middlewares=chatfiles-ui_auth"
-      - "traefik.http.middlewares.chatfiles-ui_auth.basicauth.users=falktron:$$2y$$05$$8GUJU2uOvVTvb4cod1WpBOQmDhgVy7p.sB3m17zC8.q/.iy/j4tfq"
+      - "traefik.http.routers.chatdoc-ui-insecure.rule=Host(`ps.vob.ai`)"
+      - "traefik.http.routers.chatdoc-ui-insecure.entrypoints=web"
+      - "traefik.http.middlewares.chatdoc-ui-redirect-web-secure.redirectscheme.scheme=https"
+      - "traefik.http.routers.chatdoc-ui-insecure.middlewares=chatdoc-ui-redirect-web-secure"
+      - "traefik.http.routers.chatdoc-ui.rule=Host(`ps.vob.ai`)"
+      - "traefik.http.routers.chatdoc-ui.entrypoints=websecure"
+      - "traefik.http.routers.chatdoc-ui.tls=true"
+      - "traefik.http.routers.chatdoc-ui.tls.certresolver=myresolver"
+      - "traefik.http.routers.chatdoc-ui.middlewares=chatdoc-ui_auth"
+      - "traefik.http.middlewares.chatdoc-ui_auth.basicauth.users=falktron:$$2y$$05$$8GUJU2uOvVTvb4cod1WpBOQmDhgVy7p.sB3m17zC8.q/.iy/j4tfq"
     networks:
       - auto-gpt.tech
       - default 
     depends_on:
-      - chatfiles
+      - chatdoc
 
 networks:
   auto-gpt.tech:
